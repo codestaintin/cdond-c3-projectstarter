@@ -5,10 +5,6 @@ orbs:
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      # Add parameter here
-      id:
-        type: string
     steps:
       - run:
           name: Destroy environments
@@ -182,8 +178,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
-      - destroy-environment:
-          id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -239,8 +234,7 @@ jobs:
                 curl --insecure https://kvdb.io/Mz2TMCcLnrgj3nn9iwNckq/migration_${CIRCLE_WORKFLOW_ID:0:7} -d 'failure'
             fi
             exit 1
-      - destroy_environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy_environment
 #      # Here's where you will add some code to rollback on failure
 #
 #  deploy-frontend:
