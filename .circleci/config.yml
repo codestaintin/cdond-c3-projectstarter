@@ -328,7 +328,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            export API_URL="${cat url.txt}"
+            export API_URL="$(cat url.txt)"
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
