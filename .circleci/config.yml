@@ -316,7 +316,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --no-cache curl awscli
+            apk add --no-cache curl aws-cli npm
       - run:
           name: Get backend url
           command: |
