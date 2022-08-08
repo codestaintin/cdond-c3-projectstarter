@@ -311,12 +311,11 @@ jobs:
     docker:
       - image: python:3.7-alpine3.16
     steps:
-      # Checkout code from git
       - checkout
       - run:
           name: Install dependencies
           command: |
-            apk add --no-cache curl aws-cli npm nodejs
+            apk add aws-cli npm nodejs
       - run:
           name: Get backend url
           command: |
@@ -325,7 +324,7 @@ jobs:
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-            if curl -s "${API_URL}/api/status" | grep "ok"
+            if curl -s http://google.com
             then
              return 0
             else
@@ -338,7 +337,6 @@ jobs:
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
-                # Change this to 0 after the job fails
               return 0
             else
               return 1
