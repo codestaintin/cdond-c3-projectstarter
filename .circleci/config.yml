@@ -317,7 +317,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --no-cache curl 
-            pip install aws-cli
+            pip install --upgrade pip && pip install --upgrade awscli
             pip install nodejs
             pip install npm
       - run:
