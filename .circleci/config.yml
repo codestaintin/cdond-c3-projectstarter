@@ -372,34 +372,61 @@ jobs:
       - revert_migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
+#  cleanup:
+#    docker:
+#      - image: amazon/aws-cli
+#    steps:
+#      - checkout
+#      - run:
+#          name: Get old stack workflow id
+#          command: |
+#            export OldWorkflowID=$(aws cloudformation \
+#              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+#              --no-paginate --output text)
+#
+#            echo OldWorkflowID = "${OldWorkflowID}"
+#
+#            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+#              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+#            echo Stack names: "${STACKS[@]}"
+#      - run:
+#          name: Remove old stacks and files
+#          command: |
+#            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+#            then
+#               echo $OldWorkflowID $STACKS ${CIRCLE_WORKFLOW_ID:0:7}
+#               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+#               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+#               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+#            else
+#              echo --- An error occurred during stack cleanup ---
+#            fi
   cleanup:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
       - run:
-          name: Get old stack workflow id
+          name: Cleanup stacks
           command: |
-            # your code here
-            export OldWorkflowID=$(aws cloudformation \
-              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            export OldWorkflowID=$(aws cloudformation list-exports \
+              --query "Exports[?Name==\`Cloudfront-${CIRCLE_WORKFLOW_ID:0:7}\`].Value" \
               --no-paginate --output text)
-            echo OldWorkflowID = "${OldWorkflowID}"
             
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
-            echo Stack names: "${STACKS[@]}"
-      - run:
-          name: Remove old stacks and files
-          command: |
+            echo OldWorkflowID=$OldWorkflowID
+            
+            export STACKS=$(aws cloudformation list-stacks \
+              --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text)
+            
+            echo $STACKS
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
-               echo $OldWorkflowID $STACKS ${CIRCLE_WORKFLOW_ID:0:7}
-               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+              # aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              # aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              # aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             else
-              echo --- An error occurred during stack cleanup ---
+              echo ------------ Cannot cleanup stacks --------------
             fi
 
 workflows:
