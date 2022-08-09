@@ -398,7 +398,7 @@ jobs:
           command: |
             apk add --update --no-cache tar gzip nodejs npm aws-cli curl ansible
       - run:
-          name: Get old stack workflow id
+          name: Clean stacks
           command: |
             # Fetch the Old workflow ID
             cat ~/OldWorkflowID.txt
