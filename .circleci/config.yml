@@ -6,6 +6,7 @@ commands:
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
+      # Add parameter here
       workflow_id:
         type: string
     steps:
@@ -22,6 +23,7 @@ commands:
   revert_migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
+      # Add parameter here
       workflow_id:
         type: string
     steps:
@@ -101,9 +103,12 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
+      # Checkout code from git
       - checkout
+      # Restore from cache
       - restore_cache:
           keys: [frontend-build]
+      # Your job code here
       - run:
           name: Analyze frontend
           command: |
@@ -114,11 +119,15 @@ jobs:
 
   scan-backend:
     docker:
+      # Docker image here
       - image: circleci/node:13.8.0
     steps:
+      # Checkout code from git
       - checkout
+      # Restore from cache
       - restore_cache:
           keys: [backend-build]
+      # Your job code here
       - run:
           name: Analyze backend
           command: |
@@ -134,8 +143,10 @@ jobs:
 
   deploy-infrastructure:
     docker:
+    # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
     steps:
+      # Checkout code from git
       - checkout
       - run: yum install -y tar gzip
       - run:
@@ -174,7 +185,9 @@ jobs:
     docker:
       - image: python:3.7-alpine3.16
     steps:
+      # Checkout code from git
       - checkout
+      # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints:
             - 'de:59:73:17:00:c9:7c:d6:07:47:94:e9:be:71:6d:bc'
@@ -224,8 +237,10 @@ jobs:
 
   deploy-frontend:
     docker:
+      # Docker image here that supports AWS CLI
       - image: python:3.7-alpine3.16
     steps:
+      # Checkout code from git
       - checkout
       - run:
           name: Install dependencies
@@ -260,6 +275,7 @@ jobs:
       - image: python:3.7-alpine3.16
     steps:
       - checkout
+      # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints:
             - 'de:59:73:17:00:c9:7c:d6:07:47:94:e9:be:71:6d:bc'
